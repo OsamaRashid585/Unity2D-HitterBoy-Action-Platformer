@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Knife : MonoBehaviour
+{
+     private float _moveSpeed = 10;
+    [SerializeField] private GameObject _mediumBubblePrefab;
+    [SerializeField] private GameObject _SmallBubblePrefab;
+    [SerializeField] private GameObject _explosionPrefab;
+    private Vector3 _MediumBallSpawnPos = new Vector3(1f,0f,0f);
+    private Vector3 _SmallBallSpawnPos = new Vector3(0.5f,0f,0f);
+    private Vector3 _MediumExplosionPos = new Vector3(0f, 1f, 0f);
+    private Vector3 _SmallExplosionPos = new Vector3(0f, 0.5f, 0f);
+    private void Start()
+    {
+        StartCoroutine("DestroyExplosion");
+    }
+    private void Update()
+    {
+        Movement();
+        OffsetDestroy();
+
+    }
+    private void Movement()
+    {
+        transform.Translate(Vector3.up * _moveSpeed * Time.deltaTime);
+    }
+    private void OffsetDestroy()
+    {
+        if (transform.position.y >= 12)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("BigBubbleHitPoint"))
+        {
+            Instantiate(_mediumBubblePrefab, collision.transform.position + _MediumBallSpawnPos, Quaternion.identity);
+            Instantiate(_mediumBubblePrefab, collision.transform.position - _MediumBallSpawnPos, Quaternion.identity);
+            Instantiate(_explosionPrefab, collision.transform.position - _MediumExplosionPos, Quaternion.identity);
+            Destroy(GameObject.FindGameObjectWithTag("BigBubble"));
+            GameManager.Instance.Score++;
+
+        }
+        if (collision.gameObject.CompareTag("MediumBubbleHitPoint"))
+        {
+            Instantiate(_SmallBubblePrefab, collision.transform.position - _SmallBallSpawnPos, Quaternion.identity);
+            Instantiate(_SmallBubblePrefab, collision.transform.position + _SmallBallSpawnPos, Quaternion.identity);
+            Instantiate(_explosionPrefab, collision.transform.position - _SmallExplosionPos, Quaternion.identity);
+            Destroy(GameObject.FindGameObjectWithTag("MediumBubble"));
+            GameManager.Instance.Score++;
+        }
+        if (collision.gameObject.CompareTag("SmallBubbleHitPoint"))
+        {
+            GameManager.Instance.Score++;
+            Destroy(collision.gameObject);
+            Destroy(GameObject.FindGameObjectWithTag("SmallBubble"));
+
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Health"))
+        {
+            Destroy(collision.gameObject);
+            GameManager.Instance.Life++;
+        }
+        if (collision.gameObject.CompareTag("TimeStoper"))
+        {
+            Debug.Log("TimeStop"); // stoptime logic
+            Destroy(collision.gameObject);
+        }
+    }
+    private IEnumerator DestroyExplosion()
+    {
+        yield return new WaitForSeconds(1);
+        Destroy(GameObject.FindGameObjectWithTag("Explosion"));
+    }
+}
