@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Knife : MonoBehaviour
 {
-     private float _moveSpeed = 10;
+     private float _moveSpeed = 20;
     [SerializeField] private GameObject _mediumBubblePrefab;
     [SerializeField] private GameObject _SmallBubblePrefab;
     [SerializeField] private GameObject _explosionPrefab;
@@ -41,7 +41,9 @@ public class Knife : MonoBehaviour
             Instantiate(_mediumBubblePrefab, collision.transform.position + _MediumBallSpawnPos, Quaternion.identity);
             Instantiate(_mediumBubblePrefab, collision.transform.position - _MediumBallSpawnPos, Quaternion.identity);
             Instantiate(_explosionPrefab, collision.transform.position - _MediumExplosionPos, Quaternion.identity);
-            Destroy(GameObject.FindGameObjectWithTag("BigBubble"));
+            var bigBubble = collision.transform.parent.gameObject;
+            Destroy(bigBubble);
+            Destroy(gameObject);
             GameManager.Instance.Score++;
 
         }
@@ -50,13 +52,16 @@ public class Knife : MonoBehaviour
             Instantiate(_SmallBubblePrefab, collision.transform.position - _SmallBallSpawnPos, Quaternion.identity);
             Instantiate(_SmallBubblePrefab, collision.transform.position + _SmallBallSpawnPos, Quaternion.identity);
             Instantiate(_explosionPrefab, collision.transform.position - _SmallExplosionPos, Quaternion.identity);
-            Destroy(GameObject.FindGameObjectWithTag("MediumBubble"));
+            var mediumBubble = collision.transform.parent.gameObject;
+            Destroy(mediumBubble);
+            Destroy(gameObject);
             GameManager.Instance.Score++;
         }
         if (collision.gameObject.CompareTag("SmallBubbleHitPoint"))
         {
             GameManager.Instance.Score++;
             Destroy(collision.gameObject);
+            Destroy(gameObject);
             Destroy(GameObject.FindGameObjectWithTag("SmallBubble"));
 
         }
