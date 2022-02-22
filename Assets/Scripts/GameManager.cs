@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
         Level = 0;
         Score = 0;
         IsgameOver = false;
-
-        StartCoroutine("DestroyBalls");
     }
 
     private void Update()
@@ -47,17 +45,6 @@ public class GameManager : MonoBehaviour
             RestartButton.SetActive(true);
             BackgroundAudio.Stop();
         }
-    }
-
-    IEnumerator DestroyBalls()
-    {
-        yield return new WaitForSeconds(25);
-        Destroy(GameObject.FindGameObjectWithTag("BigBubble"));
-        Destroy(GameObject.FindGameObjectWithTag("MediumBubble"));
-        Destroy(GameObject.FindGameObjectWithTag("SmallBubbleHitPoint"));
-        Destroy(GameObject.FindGameObjectWithTag("Health"));
-        Destroy(GameObject.FindGameObjectWithTag("TimeStoper"));
-        Destroy(GameObject.FindGameObjectWithTag("Explosion"));
     }
 
 }

@@ -12,9 +12,10 @@ public class Knife : MonoBehaviour
     private Vector3 _SmallBallSpawnPos = new Vector3(0.5f,0f,0f);
     private Vector3 _MediumExplosionPos = new Vector3(0f, 1f, 0f);
     private Vector3 _SmallExplosionPos = new Vector3(0f, 0.5f, 0f);
+
     private void Start()
     {
-        StartCoroutine("DestroyExplosion");
+   
     }
     private void Update()
     {
@@ -31,6 +32,7 @@ public class Knife : MonoBehaviour
         if (transform.position.y >= 12)
         {
             Destroy(gameObject);
+            Destroy(GameObject.FindGameObjectWithTag("Explosion"));
         }
     }
 
@@ -56,13 +58,15 @@ public class Knife : MonoBehaviour
             Destroy(mediumBubble);
             Destroy(gameObject);
             GameManager.Instance.Score++;
+            
         }
         if (collision.gameObject.CompareTag("SmallBubbleHitPoint"))
         {
             GameManager.Instance.Score++;
             Destroy(collision.gameObject);
             Destroy(gameObject);
-            Destroy(GameObject.FindGameObjectWithTag("SmallBubble"));
+            var smallBubble = collision.transform.parent.gameObject;
+            Destroy(smallBubble);
 
         }
     }
@@ -79,10 +83,5 @@ public class Knife : MonoBehaviour
             Debug.Log("TimeStop"); // stoptime logic
             Destroy(collision.gameObject);
         }
-    }
-    private IEnumerator DestroyExplosion()
-    {
-        yield return new WaitForSeconds(1);
-        Destroy(GameObject.FindGameObjectWithTag("Explosion"));
     }
 }
